@@ -1,0 +1,15 @@
+simv
+simv.daidir/
+csrc/
+*.vcd
+*.fsdb
+*.vpd
+*.log
+*.key
+ucli.key
+DVEfiles/
+coverage/
+coverage.vdb/
+*.vdb/
+urg_report*/
+urgReport/
