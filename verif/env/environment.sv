@@ -81,11 +81,63 @@ class environment;
   endtask
 
   // ----------------------------------------------------------
-  // Convenience: wait until generator mailbox AND driver have
-  // drained, then a few extra cycles for outputs to flush.
+  // Convenience: wait until ALL real activity has drained -
+  // not just "the generator mailbox is empty" (which only means
+  // the driver has STARTED the last transfer, not finished it),
+  // but every stage of the pipeline:
+  //   1. generator -> driver mailbox empty (driver picked up the
+  //      last transaction)
+  //   2. the driver is not mid-fragment (num_sent stops changing -
+  //      simplest robust signal is to also wait a few idle cycles
+  //      on the bus itself: in_vld deasserted)
+  //   3. monitor -> scoreboard input-fragment mailbox empty (the
+  //      monitor has finished reconstructing and forwarding every
+  //      fragment it saw)
+  //   4. the reference model has no leftover expected local/remote
+  //      bytes that the DUT hasn't produced yet AND no leftover
+  //      observed bytes still in their mailboxes
+  //   5. drop_cnt comparison is allowed to settle one more cycle
+  //      after all of the above, since it is the last side-effect
+  //      of processing a fragment.
+  //
+  // Each `wait` below is a real synchronization point (not a
+  // fixed guess), so this is correct regardless of fragment size,
+  // payload length, or how many fragments were queued.
   // ----------------------------------------------------------
-  task wait_drain(int unsigned extra_cycles = 50);
+  task wait_drain(int unsigned extra_cycles = 20);
+    // 1) generator -> driver: wait until the driver has consumed
+    //    every transaction the test pushed.
     wait (gen2drv_mbx.num() == 0);
+
+    // 2) the driver must not be mid-fragment: the bus must show
+    //    an idle (deasserted) in_vld for at least one full cycle,
+    //    which only happens once drive_one() has returned for the
+    //    last queued fragment.
+    @(posedge vif.clk);
+    while (vif.in_vld) @(posedge vif.clk);
+
+    // 3) monitor -> scoreboard: every fragment fully observed on
+    //    the wire must have been forwarded for reference-model
+    //    processing.
+    wait (mon2sb_input_mbx.num() == 0);
+
+    // 4) the scoreboard's checker tasks consume from
+    //    mon2sb_local_mbx / mon2sb_remote_mbx as fast as the DUT
+    //    produces output; once the input side has drained, any
+    //    output the DUT still owes will appear within a bounded
+    //    number of cycles (bounded by the largest pending
+    //    fragment's payload length). Wait until both the
+    //    observed-side mailboxes AND the reference model's
+    //    expected-side queues are simultaneously empty, which is
+    //    the only state where "nothing is in flight" on either
+    //    side of the comparison.
+    wait (mon2sb_local_mbx.num()  == 0 && sb.rm.exp_local_q.size()        == 0 &&
+          mon2sb_remote_mbx.num() == 0 && sb.rm.exp_remote_words_q.size() == 0);
+
+    // 5) drop_cnt is the last side-effect of process_fragment() for
+    //    a dropped packet; give it a couple of settle cycles plus
+    //    whatever small margin the caller wants for test-specific
+    //    follow-up checks (e.g. reading vif.drop_cnt directly).
     repeat (extra_cycles) @(posedge vif.clk);
   endtask
 
