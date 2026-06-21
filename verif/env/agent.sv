@@ -30,6 +30,7 @@ class bird_agent;
   task run();
     fork
       drv.run();
+      drv.drive_backpressure();
       mon.run();
     join_none
   endtask

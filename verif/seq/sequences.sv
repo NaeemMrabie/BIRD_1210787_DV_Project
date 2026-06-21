@@ -291,10 +291,6 @@ class seq_backpressure_stability extends bird_base_sequence;
 
     env.drv.local_rdy_low_pct  = 40;
     env.drv.remote_rdy_low_pct = 40;
-    fork
-      env.drv.drive_backpressure();
-    join_none
-
     t = env.gen.gen_random_local(.seq(4), .payload_len(20));
     env.gen.send(t);
 

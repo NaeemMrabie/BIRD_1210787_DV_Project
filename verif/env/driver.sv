@@ -25,7 +25,7 @@
 
 class driver;
 
-  virtual bird_if.DRV vif;
+  virtual bird_if vif;
   mailbox #(transaction) gen2drv_mbx;  // generator -> driver
   mailbox #(transaction) drv2mon_mbx;  // OPTIONAL: driver can push "as-sent" txn for self-checking refs
 
@@ -36,7 +36,7 @@ class driver;
 
   int unsigned num_sent;
 
-  function new(virtual bird_if.DRV vif,
+  function new(virtual bird_if vif,
                mailbox #(transaction) gen2drv_mbx,
                mailbox #(transaction) drv2mon_mbx = null);
     this.vif               = vif;
@@ -69,8 +69,13 @@ class driver;
       @(vif.drv_cb);
       if (local_rdy_low_pct > 0)
         vif.drv_cb.local_rdy <= ($urandom_range(0, 99) >= local_rdy_low_pct);
+      else
+        vif.drv_cb.local_rdy <= 1'b1;
+
       if (remote_rdy_low_pct > 0)
         vif.drv_cb.remote_rdy <= ($urandom_range(0, 99) >= remote_rdy_low_pct);
+      else
+        vif.drv_cb.remote_rdy <= 1'b1;
     end
   endtask
 
