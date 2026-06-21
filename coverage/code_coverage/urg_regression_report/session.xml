@@ -1,6 +1,6 @@
-<session version="1.1" release="T-2022.06-SP2" timestp="2026-06-21 19:46:25 GMT">
+<session version="1.1" release="T-2022.06-SP2" timestp="2026-06-21 21:26:04 GMT">
   <info>
-    <attr name="datetime" value="Sun Jun 21 22:46:26 2026
+    <attr name="datetime" value="Mon Jun 22 00:26:05 2026
 "/>
     <attr name="command" value="urg -dir simv.vdb -report coverage/code_coverage/urg_regression_report"/>
     <attr name="top_instance" value="tb_top"/>
@@ -17,12 +17,12 @@
   </hvp>
   <old_coverage>
   <scope type="top" name="top">
-    <metric name="Line" value="174/184" />
-    <metric name="Cond" value="22/32" />
-    <metric name="Toggle" value="332/428" />
-    <metric name="FSM" value="5/5" />
-    <metric name="Branch" value="32/40" />
-    <metric name="Group" value="93.9385%" />
+    <metric name="Line" value="150/162" />
+    <metric name="Cond" value="15/26" />
+    <metric name="Toggle" value="336/432" />
+    <metric name="FSM" value="4/5" />
+    <metric name="Branch" value="31/39" />
+    <metric name="Group" value="93.4176%" />
   </scope>
   <scope type="instance" name="top">
   </scope>
@@ -31,7 +31,7 @@
       <metric name="Group" value="88.5714%" />
     </scope>
     <scope type="group" name="$unit::bird_coverage::cfg_cg">
-      <metric name="Group" value="99.3055%" />
+      <metric name="Group" value="98.2639%" />
     </scope>
   </scope>
   <scope type="assert" name="Statistics">

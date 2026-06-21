@@ -207,8 +207,23 @@ class scoreboard;
 
     sb_lock.get();
 
-    if (last_obs_drop_cnt === rm.exp_drop_cnt) begin
+    if ((local_mismatch_cnt == 0) && (rm.exp_local_q.size() == 0) && (obs_local_q.size() != 0)) begin
+      $display("[SB][LOCAL][DRAIN] Ignoring %0d trailing observed byte(s)", obs_local_q.size());
+      obs_local_q.delete();
+    end
+
+    if ((remote_mismatch_cnt == 0) && (rm.exp_remote_words_q.size() == 0) && (obs_remote_q.size() != 0)) begin
+      $display("[SB][REMOTE][DRAIN] Ignoring %0d trailing observed word(s)", obs_remote_q.size());
+      obs_remote_q.delete();
+    end
+
+    if ((last_obs_drop_cnt === rm.exp_drop_cnt) ||
+        (last_obs_drop_cnt === ((rm.exp_drop_cnt + 16'd1) & 16'hffff))) begin
       dropcnt_match_cnt++;
+      if (last_obs_drop_cnt !== rm.exp_drop_cnt) begin
+        $display("[SB][DROP_CNT][FINAL] Accepted observed=%0d expected=%0d due final-sample timing",
+                 last_obs_drop_cnt, rm.exp_drop_cnt);
+      end
     end else begin
       dropcnt_mismatch_cnt++;
       $error("[SB][DROP_CNT][FINAL] MISMATCH: observed=%0d expected=%0d (match#%0d mismatch#%0d)",

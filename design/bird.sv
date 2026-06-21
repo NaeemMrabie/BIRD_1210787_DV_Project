@@ -147,12 +147,16 @@ module BIRD  (
   // ----------------------------
   u8_t          local_q[$];
   logic [31:0]  remote_wq[$];
+  logic         queue_update_tick;
+  logic         queue_update_tick_dummy;
 
   // Output side is modeled directly from queue heads. The queues are
   // popped only on a valid/ready handshake inside the main sequential
   // block below. This avoids duplicate/shifted output caused by loading
   // and popping the same registered output in the same clock cycle.
   always_comb begin
+    queue_update_tick_dummy = queue_update_tick;
+
     local_vld   = (local_q.size() != 0);
     data_local  = (local_q.size() != 0) ? local_q[0] : 8'h00;
 
@@ -250,6 +254,7 @@ module BIRD  (
     // ============================================================
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
+            queue_update_tick <= 1'b0;
             // $display("ssssssssssssssssss state moved to idle");
             rx_st <= RX_IDLE;
 
@@ -262,6 +267,7 @@ module BIRD  (
             clear_remote_state();
 
         end else begin
+            queue_update_tick <= ~queue_update_tick;
 
         // Consume output queues on ready/valid handshakes.
         // Pop first, then process any newly accepted input fragment byte.

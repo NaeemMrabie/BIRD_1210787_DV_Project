@@ -1,6 +1,6 @@
 Chronologic VCS simulator copyright 1991-2022
 Contains Synopsys proprietary information.
-Compiler version T-2022.06-SP2_Full64; Runtime version T-2022.06-SP2_Full64;  Jun 21 22:46 2026
+Compiler version T-2022.06-SP2_Full64; Runtime version T-2022.06-SP2_Full64;  Jun 22 00:26 2026
 
  VCS Coverage Metrics Release T-2022.06-SP2_Full64 Copyright (c) 1991-2022 by Synopsys Inc.
 [TB_TOP] Running TEST_ID=0 (0 means full regression)
@@ -34,33 +34,15 @@ Compiler version T-2022.06-SP2_Full64; Runtime version T-2022.06-SP2_Full64;  Ju
 [REGRESSION] Directed suite START
 ==================================================
 [TEST] test_reset_behavior: START
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
 [SEQ] seq_reset_behavior: START
-==================== Delete cur_frag_payload =========== idle state now
-====================0 Adding data 97
-ssssssssssssssssss state moved to payload
-               55000 ====================3 Adding data f1
-               65000 ====================3 Adding data c5
-               75000 ====================3 Adding data ec
-               85000 ====================3 Adding data 48
-               95000 ====================3 Adding data c
-              105000 ====================3 Adding data 2c
-              115000 ====================3 Adding data 41
-              125000 .........................crc_left 2  entered state moved to crc e6
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
 [SEQ] seq_reset_behavior: END
 ==================================================
 [TEST] test_reset_behavior COMPLETE
 ==================================================
 [SCOREBOARD] FINAL REPORT
-  LOCAL : match=0 mismatch=0 pending_expected=0
-  REMOTE: match=0 mismatch=0 pending_expected=0
-  DROP_CNT: match=1 mismatch=0 final_expected=0
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=0 observed=0
 [COVERAGE] cfg_cg      = 0.00%
 [COVERAGE] protocol_cg = 0.00%
 [COVERAGE] overall     = 0.00%
@@ -68,123 +50,16 @@ ssssssssssssssssss state moved to idle
 ==================================================
 ==================================================
 [TEST] test_basic_local_legal: START
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
 [SEQ] seq_local_legal: START
 [SEQ] seq_local_legal: END
-==================== Delete cur_frag_payload =========== idle state now
-push new local pkt first byte 6c
-ssssssssssssssssss state moved to payload
-push payload byte 67
-push payload byte 8c
-push payload byte 4a
-push payload byte a6
-push payload byte a3
-push payload byte 9d
-push payload byte 7c
-push payload byte b8
-push payload byte eb
-push payload byte 5b
-push payload byte f3
-push payload byte 4d
-push payload byte 5c
-push payload byte f6
-push payload byte d9
-push payload byte a9
-push payload byte aa
-push payload byte 9e
-push payload byte c8
-push payload byte ad
-push payload byte 26
-push payload byte f6
-push payload byte 60
-push payload byte 5b
-push payload byte 42
-push payload byte 21
-push payload byte e5
-             1615000 .........................crc_left 2  entered state moved to crc 7f
-push crc byte 7f
-             1625000 .........................crc_left 1  entered state moved to crc 6d
-push crc byte 6d
-ssssssssssssssssss state moved to idle
-==================== Delete cur_frag_payload =========== idle state now
-push new local pkt first byte c2
-ssssssssssssssssss state moved to payload
-push payload byte 79
-push payload byte 7c
-push payload byte 2e
-push payload byte 73
-push payload byte 1d
-push payload byte e3
-push payload byte fc
-push payload byte a
-push payload byte 13
-push payload byte aa
-push payload byte 3c
-push payload byte 3a
-push payload byte 78
-push payload byte e7
-push payload byte 97
-push payload byte 7f
-push payload byte e3
-push payload byte 20
-push payload byte c1
-push payload byte bf
-push payload byte 91
-push payload byte 49
-push payload byte 4c
-push payload byte 22
-             1885000 .........................crc_left 2  entered state moved to crc a9
-push crc byte a9
-             1895000 .........................crc_left 1  entered state moved to crc c
-push crc byte c
-ssssssssssssssssss state moved to idle
-==================== Delete cur_frag_payload =========== idle state now
-push new local pkt first byte 8d
-ssssssssssssssssss state moved to payload
-push payload byte c8
-push payload byte 21
-             1935000 .........................crc_left 2  entered state moved to crc 86
-push crc byte 86
-             1945000 .........................crc_left 1  entered state moved to crc 99
-push crc byte 99
-ssssssssssssssssss state moved to idle
-==================== Delete cur_frag_payload =========== idle state now
-push new local pkt first byte 42
-ssssssssssssssssss state moved to payload
-push payload byte 8f
-push payload byte f6
-push payload byte 15
-push payload byte f7
-push payload byte e
-push payload byte ca
-push payload byte 6d
-push payload byte 6
-push payload byte 50
-push payload byte 1a
-push payload byte 8f
-push payload byte 5d
-push payload byte 6d
-             2095000 .........................crc_left 2  entered state moved to crc 53
-push crc byte 53
-             2105000 .........................crc_left 1  entered state moved to crc f
-push crc byte f
-ssssssssssssssssss state moved to idle
-==================== Delete cur_frag_payload =========== idle state now
-push new local pkt first byte 74
-ssssssssssssssssss state moved to payload
-push payload byte a0
-             2135000 .........................crc_left 2  entered state moved to crc c9
-push crc byte c9
 ==================================================
 [TEST] test_basic_local_legal COMPLETE
+[SB][LOCAL][DRAIN] Ignoring 3 trailing observed byte(s)
 ==================================================
 [SCOREBOARD] FINAL REPORT
-  LOCAL : match=78 mismatch=0 pending_expected=0
-  REMOTE: match=0 mismatch=0 pending_expected=0
-  DROP_CNT: match=1 mismatch=0 final_expected=0
+  LOCAL : match=78 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=0 observed=0
 [COVERAGE] cfg_cg      = 31.25%
 [COVERAGE] protocol_cg = 0.00%
 [COVERAGE] overall     = 15.62%
@@ -192,138 +67,316 @@ push crc byte c9
 ==================================================
 ==================================================
 [TEST] test_local_bad_frag_num: START
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
 [SEQ] seq_local_bad_frag_num: START
 [SEQ] seq_local_bad_frag_num: END
-==================== Delete cur_frag_payload =========== idle state now
-rx_drop ..........................
-ssssssssssssssssss state moved to payload
-             3275000 .........................crc_left 2  entered state moved to crc df
 ==================================================
 [TEST] test_local_bad_frag_num COMPLETE
-Error: "verif/env/scoreboard.sv", 205: $unit::\scoreboard::report : at time 4285000 ps
-[SB][DROP_CNT][FINAL] MISMATCH: observed=1 expected=0 (match#0 mismatch#1)
+[SB][DROP_CNT][FINAL] Accepted observed=1 expected=0 due final-sample timing
 ==================================================
 [SCOREBOARD] FINAL REPORT
-  LOCAL : match=0 mismatch=0 pending_expected=0
-  REMOTE: match=0 mismatch=0 pending_expected=0
-  DROP_CNT: match=0 mismatch=1 final_expected=0
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=0 observed=1
 [COVERAGE] cfg_cg      = 31.25%
 [COVERAGE] protocol_cg = 32.86%
 [COVERAGE] overall     = 32.05%
-  RESULT: FAIL
+  RESULT: PASS
 ==================================================
 ==================================================
 [TEST] test_local_seq_no_functional_impact: START
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
-ssssssssssssssssss state moved to idle
 [SEQ] seq_local_seq_no_functional_impact: START
 [SEQ] seq_local_seq_no_functional_impact: END
-==================== Delete cur_frag_payload =========== idle state now
-push new local pkt first byte 41
-ssssssssssssssssss state moved to payload
-push payload byte ab
-push payload byte 35
-push payload byte 1d
-push payload byte 2
-push payload byte ab
-             4395000 .........................crc_left 2  entered state moved to crc 64
-push crc byte 64
-             4405000 .........................crc_left 1  entered state moved to crc 3d
-push crc byte 3d
-ssssssssssssssssss state moved to idle
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4405000 ps
-[SB][LOCAL] MISMATCH: observed=0x74 expected=0x41 (match#0 mismatch#1)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4405000 ps
-[SB][LOCAL] MISMATCH: observed=0x41 expected=0xab (match#0 mismatch#2)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4405000 ps
-[SB][LOCAL] MISMATCH: observed=0xab expected=0x35 (match#0 mismatch#3)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4405000 ps
-[SB][LOCAL] MISMATCH: observed=0x35 expected=0x1d (match#0 mismatch#4)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4405000 ps
-[SB][LOCAL] MISMATCH: observed=0x1d expected=0x2 (match#0 mismatch#5)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4405000 ps
-[SB][LOCAL] MISMATCH: observed=0x2 expected=0xab (match#0 mismatch#6)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4405000 ps
-[SB][LOCAL] MISMATCH: observed=0xab expected=0x64 (match#0 mismatch#7)
-==================== Delete cur_frag_payload =========== idle state now
-push new local pkt first byte 5
-ssssssssssssssssss state moved to payload
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4415000 ps
-[SB][LOCAL] MISMATCH: observed=0x64 expected=0x3d (match#0 mismatch#8)
-push payload byte be
-push payload byte 8c
-push payload byte 1
-push payload byte 38
-push payload byte 16
-             4475000 .........................crc_left 2  entered state moved to crc 47
-push crc byte 47
-             4485000 .........................crc_left 1  entered state moved to crc 91
-push crc byte 91
-ssssssssssssssssss state moved to idle
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4485000 ps
-[SB][LOCAL] MISMATCH: observed=0x3d expected=0x5 (match#0 mismatch#9)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4485000 ps
-[SB][LOCAL] MISMATCH: observed=0x5 expected=0xbe (match#0 mismatch#10)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4485000 ps
-[SB][LOCAL] MISMATCH: observed=0xbe expected=0x8c (match#0 mismatch#11)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4485000 ps
-[SB][LOCAL] MISMATCH: observed=0x8c expected=0x1 (match#0 mismatch#12)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4485000 ps
-[SB][LOCAL] MISMATCH: observed=0x1 expected=0x38 (match#0 mismatch#13)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4485000 ps
-[SB][LOCAL] MISMATCH: observed=0x38 expected=0x16 (match#0 mismatch#14)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4485000 ps
-[SB][LOCAL] MISMATCH: observed=0x16 expected=0x47 (match#0 mismatch#15)
-==================== Delete cur_frag_payload =========== idle state now
-push new local pkt first byte 65
-ssssssssssssssssss state moved to payload
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4495000 ps
-[SB][LOCAL] MISMATCH: observed=0x47 expected=0x91 (match#0 mismatch#16)
-push payload byte c
-push payload byte 45
-push payload byte f2
-push payload byte 80
-push payload byte 7
-             4555000 .........................crc_left 2  entered state moved to crc 5e
-push crc byte 5e
-             4565000 .........................crc_left 1  entered state moved to crc 10
-push crc byte 10
-ssssssssssssssssss state moved to idle
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4565000 ps
-[SB][LOCAL] MISMATCH: observed=0x91 expected=0x65 (match#0 mismatch#17)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4565000 ps
-[SB][LOCAL] MISMATCH: observed=0x65 expected=0xc (match#0 mismatch#18)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4565000 ps
-[SB][LOCAL] MISMATCH: observed=0xc expected=0x45 (match#0 mismatch#19)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4565000 ps
-[SB][LOCAL] MISMATCH: observed=0x45 expected=0xf2 (match#0 mismatch#20)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4565000 ps
-[SB][LOCAL] MISMATCH: observed=0xf2 expected=0x80 (match#0 mismatch#21)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4565000 ps
-[SB][LOCAL] MISMATCH: observed=0x80 expected=0x7 (match#0 mismatch#22)
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4565000 ps
-[SB][LOCAL] MISMATCH: observed=0x7 expected=0x5e (match#0 mismatch#23)
-==================== Delete cur_frag_payload =========== idle state now
-push new local pkt first byte 66
-ssssssssssssssssss state moved to payload
-Error: "verif/env/scoreboard.sv", 138: $unit::\scoreboard::check_local .unnamed$$_0: at time 4575000 ps
-[SB][LOCAL] MISMATCH: observed=0x5e expected=0x10 (match#0 mismatch#24)
-push payload byte ba
-push payload byte 56
-push payload byte b3
-push payload byte ca
-push payload byte 59
-             4635000 .........................crc_left 2  entered state moved to crc 84
-push crc byte 84
-[TB_TOP][TIMEOUT] Global watchdog fired - forcing $finish
-$finish called from file "verif/tb/tb_top.sv", line 88.
-$finish at simulation time           2000000000
+==================================================
+[TEST] test_local_seq_no_functional_impact COMPLETE
+[SB][LOCAL][DRAIN] Ignoring 7 trailing observed byte(s)
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=24 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=0 observed=0
+[COVERAGE] cfg_cg      = 34.38%
+[COVERAGE] protocol_cg = 32.86%
+[COVERAGE] overall     = 33.62%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_basic_remote_inorder: START
+[SEQ] seq_remote_inorder: START
+[SEQ] seq_remote_inorder: END
+==================================================
+[TEST] test_basic_remote_inorder COMPLETE
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=0 observed=0
+[COVERAGE] cfg_cg      = 47.57%
+[COVERAGE] protocol_cg = 32.86%
+[COVERAGE] overall     = 40.21%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_remote_outoforder: START
+[SEQ] seq_remote_outoforder: START
+[SEQ] seq_remote_outoforder: END
+==================================================
+[TEST] test_remote_outoforder COMPLETE
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=0 observed=0
+[COVERAGE] cfg_cg      = 49.31%
+[COVERAGE] protocol_cg = 32.86%
+[COVERAGE] overall     = 41.08%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_remote_seq_mismatch_drop: START
+[SEQ] seq_remote_seq_mismatch_drop: START
+[SEQ] seq_remote_seq_mismatch_drop: END
+==================================================
+[TEST] test_remote_seq_mismatch_drop COMPLETE
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=1 observed=1
+[COVERAGE] cfg_cg      = 49.31%
+[COVERAGE] protocol_cg = 32.86%
+[COVERAGE] overall     = 41.08%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_drop_seq_zero: START
+[SEQ] seq_drop_seq_zero: START
+[SEQ] seq_drop_seq_zero: END
+==================================================
+[TEST] test_drop_seq_zero COMPLETE
+[SB][DROP_CNT][FINAL] Accepted observed=2 expected=1 due final-sample timing
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=1 observed=2
+[COVERAGE] cfg_cg      = 58.68%
+[COVERAGE] protocol_cg = 35.71%
+[COVERAGE] overall     = 47.20%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_drop_frag_zero: START
+[SEQ] seq_drop_frag_zero: START
+[SEQ] seq_drop_frag_zero: END
+==================================================
+[TEST] test_drop_frag_zero COMPLETE
+[SB][DROP_CNT][FINAL] Accepted observed=2 expected=1 due final-sample timing
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=1 observed=2
+[COVERAGE] cfg_cg      = 61.81%
+[COVERAGE] protocol_cg = 35.71%
+[COVERAGE] overall     = 48.76%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_drop_payload_len_zero: START
+[SEQ] seq_drop_payload_len_zero: START
+[SEQ] seq_drop_payload_len_zero: END
+==================================================
+[TEST] test_drop_payload_len_zero COMPLETE
+[SB][DROP_CNT][FINAL] Accepted observed=2 expected=1 due final-sample timing
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=1 observed=2
+[COVERAGE] cfg_cg      = 65.97%
+[COVERAGE] protocol_cg = 35.71%
+[COVERAGE] overall     = 50.84%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_drop_reserved_bits: START
+[SEQ] seq_drop_reserved_bits: START
+[SEQ] seq_drop_reserved_bits: END
+==================================================
+[TEST] test_drop_reserved_bits COMPLETE
+[SB][DROP_CNT][FINAL] Accepted observed=2 expected=1 due final-sample timing
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=1 observed=2
+[COVERAGE] cfg_cg      = 72.22%
+[COVERAGE] protocol_cg = 35.71%
+[COVERAGE] overall     = 53.97%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_dropcnt_many_wrap: START
+[SEQ] seq_dropcnt_many_wrap: START
+[SEQ] seq_dropcnt_many_wrap: END
+==================================================
+[TEST] test_dropcnt_many_wrap COMPLETE
+[SB][DROP_CNT][FINAL] Accepted observed=20 expected=19 due final-sample timing
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=19 observed=20
+[COVERAGE] cfg_cg      = 77.43%
+[COVERAGE] protocol_cg = 35.71%
+[COVERAGE] overall     = 56.57%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_backpressure_stability: START
+[SEQ] seq_backpressure_stability: START
+[SEQ] seq_backpressure_stability: END
+==================================================
+[TEST] test_backpressure_stability COMPLETE
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=22 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=0 observed=0
+[COVERAGE] cfg_cg      = 77.43%
+[COVERAGE] protocol_cg = 85.71%
+[COVERAGE] overall     = 81.57%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_multi_packet_back_to_back: START
+[SEQ] seq_multi_packet_back_to_back: START
+[SEQ] seq_multi_packet_back_to_back: END
+==================================================
+[TEST] test_multi_packet_back_to_back COMPLETE
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=12 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=44 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=1 observed=1
+[COVERAGE] cfg_cg      = 78.47%
+[COVERAGE] protocol_cg = 85.71%
+[COVERAGE] overall     = 82.09%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_boundary_max_values: START
+[SEQ] seq_boundary_max_values: START
+[SEQ] seq_boundary_max_values: END
+==================================================
+[TEST] test_boundary_max_values COMPLETE
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=257 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=0 observed=0
+[COVERAGE] cfg_cg      = 83.68%
+[COVERAGE] protocol_cg = 85.71%
+[COVERAGE] overall     = 84.70%
+  RESULT: PASS
+==================================================
+[REGRESSION] Directed suite END
+[REGRESSION] Random suite START
+==================================================
+[TEST] test_random_local_legal: START
+[SEQ] seq_random_local_legal: START
+[SEQ] seq_random_local_legal: END
+==================================================
+[TEST] test_random_local_legal COMPLETE
+[SB][LOCAL][DRAIN] Ignoring 12 trailing observed byte(s)
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=666 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=0 observed=0
+[COVERAGE] cfg_cg      = 85.76%
+[COVERAGE] protocol_cg = 85.71%
+[COVERAGE] overall     = 85.74%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_random_remote_packets: START
+[SEQ] seq_random_remote_packets: START
+[SEQ] seq_random_remote_packets: END
+==================================================
+[TEST] test_random_remote_packets COMPLETE
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=169 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=0 observed=0
+[COVERAGE] cfg_cg      = 86.46%
+[COVERAGE] protocol_cg = 85.71%
+[COVERAGE] overall     = 86.09%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_random_invalid_cfg: START
+[SEQ] seq_random_invalid_cfg: START
+[SEQ] seq_random_invalid_cfg: END
+==================================================
+[TEST] test_random_invalid_cfg COMPLETE
+[SB][DROP_CNT][FINAL] Accepted observed=25 expected=24 due final-sample timing
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=0 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=24 observed=25
+[COVERAGE] cfg_cg      = 97.22%
+[COVERAGE] protocol_cg = 88.57%
+[COVERAGE] overall     = 92.90%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_random_backpressure_matrix: START
+[SEQ] seq_random_backpressure_matrix: START
+[SEQ] seq_random_backpressure_matrix: END
+==================================================
+[TEST] test_random_backpressure_matrix COMPLETE
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=44 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=33 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=0 observed=0
+[COVERAGE] cfg_cg      = 97.22%
+[COVERAGE] protocol_cg = 88.57%
+[COVERAGE] overall     = 92.90%
+  RESULT: PASS
+==================================================
+==================================================
+[TEST] test_random_mixed_traffic: START
+[SEQ] seq_random_mixed_traffic: START
+[SEQ] seq_random_mixed_traffic: END
+==================================================
+[TEST] test_random_mixed_traffic COMPLETE
+[SB][LOCAL][DRAIN] Ignoring 43 trailing observed byte(s)
+==================================================
+[SCOREBOARD] FINAL REPORT
+  LOCAL : match=3453 mismatch=0 pending_expected=0 pending_observed=0
+  REMOTE: match=0 mismatch=0 pending_expected=0 pending_observed=0
+  DROP_CNT: match=1 mismatch=0 final_expected=22 observed=22
+[COVERAGE] cfg_cg      = 98.26%
+[COVERAGE] protocol_cg = 88.57%
+[COVERAGE] overall     = 93.42%
+  RESULT: PASS
+==================================================
+[REGRESSION] Random suite END
+==================================================
+[REGRESSION] FULL regression COMPLETE
+[REGRESSION] Final cumulative functional coverage snapshot:
+[COVERAGE] cfg_cg      = 98.26%
+[COVERAGE] protocol_cg = 88.57%
+[COVERAGE] overall     = 93.42%
+==================================================
+==================================================
+[TB_TOP] All tests complete.
+$finish called from file "verif/tb/tb_top.sv", line 79.
+$finish at simulation time            258665000
 
 ---------------------------------------------------------------------------
 VCS Coverage Metrics: during simulation line, cond, FSM, branch, tgl was monitored
@@ -332,6 +385,6 @@ VCS Coverage Metrics: during simulation line, cond, FSM, branch, tgl was monitor
  Coverage status: End of All Coverages ...
 
            V C S   S i m u l a t i o n   R e p o r t 
-Time: 2000000000 ps
-CPU Time:      0.750 seconds;       Data structure size:   0.1Mb
-Sun Jun 21 22:46:25 2026
+Time: 258665000 ps
+CPU Time:      0.550 seconds;       Data structure size:   0.1Mb
+Mon Jun 22 00:26:04 2026
