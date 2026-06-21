@@ -1,4 +1,4 @@
-# BIRD_1210787 — Plain SystemVerilog Verification Project
+# BIRD_1210787 — Birzeit Integrated Router Design Verification Project
 
 Student ID: **1210787**
 
