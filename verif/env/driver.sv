@@ -35,6 +35,7 @@ class driver;
   int unsigned in_vld_gap_pct;      // % chance of inserting an idle (vld=0) cycle before a fragment
 
   int unsigned num_sent;
+  bit          busy;
 
   function new(virtual bird_if.DRV vif,
                mailbox #(transaction) gen2drv_mbx,
@@ -46,6 +47,7 @@ class driver;
     this.remote_rdy_low_pct = 0;
     this.in_vld_gap_pct     = 0;
     this.num_sent           = 0;
+    this.busy               = 0;
   endfunction
 
   // ----------------------------------------------------------
@@ -57,6 +59,10 @@ class driver;
     vif.drv_cb.cfg        <= 32'h0;
     vif.drv_cb.local_rdy  <= 1'b1;
     vif.drv_cb.remote_rdy <= 1'b1;
+    local_rdy_low_pct     = 0;
+    remote_rdy_low_pct    = 0;
+    in_vld_gap_pct        = 0;
+    busy                  = 0;
   endtask
 
   // ----------------------------------------------------------
@@ -80,6 +86,8 @@ class driver;
   // ----------------------------------------------------------
   task drive_one(transaction t);
     byte unsigned crc0, crc1;
+
+    busy = 1;
 
     // Optional idle gap before this fragment to vary timing
     if (in_vld_gap_pct > 0 && $urandom_range(0, 99) < in_vld_gap_pct) begin
@@ -145,6 +153,7 @@ class driver;
     vif.drv_cb.cfg     <= 32'h0;
 
     num_sent++;
+    busy = 0;
 
     if (drv2mon_mbx != null) drv2mon_mbx.put(t.copy());
   endtask

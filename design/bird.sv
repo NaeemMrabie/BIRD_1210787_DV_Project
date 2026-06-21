@@ -143,32 +143,21 @@ module BIRD  (
   end
 
   // ----------------------------
-  // Output queues (hold stable under backpressure by not popping)
+  // Output queues
   // ----------------------------
-  u8_t         local_q[$];
-  logic [31:0] remote_wq[$];
+  u8_t          local_q[$];
+  logic [31:0]  remote_wq[$];
 
-  // Drive outputs + pop on handshake
-  always_ff @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
-      local_vld  <= 1'b0;
-      data_local <= 8'h00;
+  // Output side is modeled directly from queue heads. The queues are
+  // popped only on a valid/ready handshake inside the main sequential
+  // block below. This avoids duplicate/shifted output caused by loading
+  // and popping the same registered output in the same clock cycle.
+  always_comb begin
+    local_vld   = (local_q.size() != 0);
+    data_local  = (local_q.size() != 0) ? local_q[0] : 8'h00;
 
-      remote_vld  <= 1'b0;
-      data_remote <= 32'h0;
-    end else begin
-      local_vld  = (local_q.size() != 0);
-      data_local = (local_q.size() != 0) ? local_q[0] : 8'h00;
-      if (local_vld && local_rdy) begin
-        void'(local_q.pop_front());
-      end
-
-      remote_vld  <= (remote_wq.size() != 0);
-      data_remote <= (remote_wq.size() != 0) ? remote_wq[0] : 32'h0;
-      if (remote_vld && remote_rdy) begin
-        void'(remote_wq.pop_front());
-      end
-    end
+    remote_vld  = (remote_wq.size() != 0);
+    data_remote = (remote_wq.size() != 0) ? remote_wq[0] : 32'h0000_0000;
   end
 
   // ============================================================
@@ -261,7 +250,7 @@ module BIRD  (
     // ============================================================
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            $display("ssssssssssssssssss state moved to idle");
+            // $display("ssssssssssssssssss state moved to idle");
             rx_st <= RX_IDLE;
 
             local_q.delete();
@@ -273,6 +262,16 @@ module BIRD  (
             clear_remote_state();
 
         end else begin
+
+        // Consume output queues on ready/valid handshakes.
+        // Pop first, then process any newly accepted input fragment byte.
+        if (local_vld && local_rdy && local_q.size() != 0) begin
+            void'(local_q.pop_front());
+        end
+        if (remote_vld && remote_rdy && remote_wq.size() != 0) begin
+            void'(remote_wq.pop_front());
+        end
+
         if (in_vld && in_rdy) begin
             unique case (rx_st)
 
@@ -287,7 +286,7 @@ module BIRD  (
                     rx_frag      = cfg[20:16];
                     rx_seq       = cfg[28:24];
 
-                    $display("==================== Delete cur_frag_payload =========== idle state now");
+                    // $display("==================== Delete cur_frag_payload =========== idle state now");
                     cur_frag_payload.delete();
 
                     // Consuming FIRST payload byte now; remaining payload bytes = PAYLOAD_LEN - 1
@@ -297,7 +296,7 @@ module BIRD  (
                     // If cfg invalid: count one dropped packet; consume bytes but do not forward/store
                     if (rx_drop) begin
                         inc_drop_cnt();
-                        $display("rx_drop ..........................");
+                        // $display("rx_drop ..........................");
 
                         // If this is a remote fragment for the active packet, drop that active packet too
                         if (cfg[0] == 1'b1 && remote_active && (cfg[28:24] == active_seq)) begin
@@ -307,7 +306,7 @@ module BIRD  (
                         // Valid cfg: handle local vs remote
                         if (!rx_is_remote) begin
                             // LOCAL valid: forward first payload byte
-                            $display("push new local pkt first byte %0h",data_in );
+                            // $display("push new local pkt first byte %0h",data_in );
                             local_q.push_back(data_in);
                         end else begin
                             // REMOTE valid
@@ -322,11 +321,11 @@ module BIRD  (
                                     frag_seen[f] = 0;
                                     frag_payload[f].delete();
                                 end
-                                $display("====================0 Adding data %0h",data_in);
+                                // $display("====================0 Adding data %0h",data_in);
                                 cur_frag_payload.push_back(data_in);
                             end else begin
                                 // Active packet exists
-                                $display("rx seq %0d, active seq %0d", rx_seq, active_seq);
+                                // $display("rx seq %0d, active seq %0d", rx_seq, active_seq);
                                 if (rx_seq != active_seq) begin
                                     // Mismatched SEQ while accumulating => drop current packet,
                                     // then start accumulating the incoming packet.
@@ -338,11 +337,11 @@ module BIRD  (
                                         frag_seen[f] = 0;
                                         frag_payload[f].delete();
                                     end
-                                    $display("====================1 Adding data %0h",data_in);
+                                    // $display("====================1 Adding data %0h",data_in);
                                     cur_frag_payload.push_back(data_in);
                                 end else begin
                                     // Same SEQ as active: accept payload
-                                    $display("====================2 Adding data %0h",data_in);
+                                    // $display("====================2 Adding data %0h",data_in);
                                     cur_frag_payload.push_back(data_in);
                                 end
                             end
@@ -351,10 +350,10 @@ module BIRD  (
 
                     // Next state
                     if (((cfg[15:8] > 0) ? (cfg[15:8] - 1) : 0) == 0) begin
-                        $display("ssssssssssssssssss state moved to crc");
+                        // $display("ssssssssssssssssss state moved to crc");
                         rx_st <= RX_CRC;
                     end else begin
-                        $display("ssssssssssssssssss state moved to payload");
+                        // $display("ssssssssssssssssss state moved to payload");
                         rx_st <= RX_PAYLOAD;
                     end
                 
@@ -368,12 +367,12 @@ module BIRD  (
                     if (!rx_drop) begin
                         if (!rx_is_remote) begin
                             // Local: forward payload bytes
-                            $display("push payload byte %0h",data_in );
+                            // $display("push payload byte %0h",data_in );
                             local_q.push_back(data_in);
                         end else begin
                             // Remote: only keep collecting if active context matches rx_seq
                             if (remote_active && (rx_seq == active_seq)) begin
-                                $display("%t ====================3 Adding data %0h",$time,data_in);
+                                // $display("%t ====================3 Adding data %0h",$time,data_in);
                                 cur_frag_payload.push_back(data_in);
                             end
                         end
@@ -383,7 +382,7 @@ module BIRD  (
 
                     // After consuming the last remaining payload byte, move to CRC
                     if (payload_left == 1) begin
-                        //$display("ssssssssssssssssss state moved to crc");
+                        //// $display("ssssssssssssssssss state moved to crc");
                         rx_st <= RX_CRC;
                     end
                     
@@ -394,23 +393,23 @@ module BIRD  (
                 // Local: forward CRC bytes unchanged on the local stream.
                 // ----------------------------------------------------
                 RX_CRC: begin
-                    $display("%t .........................crc_left %0d  entered state moved to crc %0h",$time, crc_left, data_in);
+                    // $display("%t .........................crc_left %0d  entered state moved to crc %0h",$time, crc_left, data_in);
                     if (crc_left > 0) crc_left <= crc_left - 1;
 
                     // Forward CRC bytes to local output only (if not dropped)
                     if (!rx_drop && !rx_is_remote) begin
-                        $display("push crc byte %0h",data_in );
+                        // $display("push crc byte %0h",data_in );
                         local_q.push_back(data_in);
                     end
 
                     // End-of-fragment on the second CRC byte
                     if (crc_left == 1) begin
                         if (!rx_drop && rx_is_remote) begin
-                            $display("no drop and is remote");
+                            // $display("no drop and is remote");
                             // Commit remote fragment payload if active and SEQ matches
                             if (!(remote_active && (rx_seq == active_seq))) begin
                                 // Remote fragment without valid active context => drop packet
-                                $display("inc_drop_cnt rx_seq %0d active_seq %0d", rx_seq, active_seq);
+                                // $display("inc_drop_cnt rx_seq %0d active_seq %0d", rx_seq, active_seq);
                                 inc_drop_cnt();
                             end else begin
                                 // rx_frag is guaranteed non-zero by cfg_invalid() for remote
@@ -418,7 +417,7 @@ module BIRD  (
                                 if (rx_frag < 1 || rx_frag > 31) begin
                                     drop_remote_packet_counted();
                                 end else begin
-                                    $display("payload ready ........");
+                                    // $display("payload ready ........");
                                     //frag_seen[rx_frag] = 1;
                                     //frag_payload[rx_frag].delete();
                                     frag_seen[rx_frag] = 1;
@@ -426,12 +425,12 @@ module BIRD  (
                                     //foreach (cur_frag_payload[i]) frag_payload[rx_frag].push_back(cur_frag_payload[i]);
                                     
                                     foreach (cur_frag_payload[i]) begin
-                                        $display ("push back to frag_payload %0h",cur_frag_payload[i] );
+                                        // $display ("push back to frag_payload %0h",cur_frag_payload[i] );
                                         frag_payload[rx_frag].push_back(cur_frag_payload[i]);
                                     end
 
                                     // Infer N as max FRAG_NUM seen so far
-                                    $display("check if frag done");
+                                    // $display("check if frag done");
                                     if (rx_frag > active_max_frag) active_max_frag = rx_frag;
 
                                     // If we now have all fragments 1..N, build output
@@ -443,7 +442,7 @@ module BIRD  (
                         end
 
                         // Ready for next fragment
-                        $display("ssssssssssssssssss state moved to idle");
+                        // $display("ssssssssssssssssss state moved to idle");
                         rx_st <= RX_IDLE;
                     end
                 end

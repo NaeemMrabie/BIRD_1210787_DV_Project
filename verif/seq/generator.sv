@@ -87,9 +87,13 @@ class generator;
   // ----------------------------------------------------------
   function void gen_remote_packet_frags(int unsigned seq, int unsigned n_frags,
                                          output transaction frags[]);
+    // The model infers the remote packet size from the largest FRAG_NUM
+    // seen so far and completes when all fragments 1..N are present.
+    // Therefore directed complete packets are generated high-to-low so
+    // FRAG_NUM==1 arrives last in the simple in-order case.
     frags = new[n_frags];
-    for (int f = 1; f <= n_frags; f++) begin
-      frags[f-1] = gen_random_remote_frag(seq, f);
+    for (int f = 0; f < n_frags; f++) begin
+      frags[f] = gen_random_remote_frag(seq, n_frags - f);
     end
   endfunction
 

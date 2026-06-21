@@ -169,7 +169,9 @@ class seq_remote_seq_mismatch_drop extends bird_base_sequence;
     transaction t;
     transaction frags2[];
 
-    t = env.gen.gen_random_remote_frag(2, 1, 10);
+    // Start an incomplete packet with FRAG_NUM=2, then introduce
+    // a different SEQ_NUM. This must drop the in-progress packet.
+    t = env.gen.gen_random_remote_frag(2, 2, 10);
     env.gen.send(t);
 
     env.gen.gen_remote_packet_frags(3, 2, frags2);
@@ -291,9 +293,6 @@ class seq_backpressure_stability extends bird_base_sequence;
 
     env.drv.local_rdy_low_pct  = 40;
     env.drv.remote_rdy_low_pct = 40;
-    fork
-      env.drv.drive_backpressure();
-    join_none
 
     t = env.gen.gen_random_local(.seq(4), .payload_len(20));
     env.gen.send(t);

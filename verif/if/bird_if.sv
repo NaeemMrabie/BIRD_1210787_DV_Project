@@ -57,7 +57,7 @@ interface bird_if (input logic clk);
   // after the active edge, so it always sees post-edge values.
   // ----------------------------------------------------------
   clocking mon_cb @(posedge clk);
-    default input #1ps;
+    default input #1step;
     input in_vld;
     input in_rdy;
     input data_in;
