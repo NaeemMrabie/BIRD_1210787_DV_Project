@@ -1,4 +1,9 @@
-
+// ============================================================
+// bird_cfg_pkg.sv
+// ------------------------------------------------------------
+// Spec-level constants only. The testbench does not depend on
+// RTL implementation details.
+// ============================================================
 
 `ifndef BIRD_CFG_PKG_SV
 `define BIRD_CFG_PKG_SV

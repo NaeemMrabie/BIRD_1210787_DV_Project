@@ -1,10 +1,10 @@
 // ============================================================
 // BIRD Behavioral SystemVerilog Model (NON-synthesizable)
 // ============================================================
-// UPDATED rule (per your latest instruction):
+// Spec rule:
 //  - For LOCAL traffic (cfg[0]==0):
-//      If SEQ_NUM != 1 OR FRAG_NUM != 1  => DROP packet (no output), increment drop_cnt
-//      So: valid local requires SEQ_NUM==1 AND FRAG_NUM==1.
+//      SEQ_NUM must be non-zero and FRAG_NUM must be 1.
+//      SEQ_NUM has no functional impact on local routing.
 //  - For REMOTE traffic (cfg[0]==1):
 //      SEQ_NUM must be non-zero and FRAG_NUM must be non-zero.
 //
@@ -82,13 +82,18 @@ module BIRD  (
     // PAYLOAD_LEN must be 1..255 (0 invalid)
     if (c[15:8] == 8'd0) inv = 1;
 
+    // SEQ_NUM == 0 is a drop condition for ALL traffic, local and
+    // remote alike (spec Section 8.1, first bullet - not scoped to
+    // remote only).
+    if (c[28:24] == 5'd0) inv = 1;
+
     if (c[0] == 1'b0) begin
-      // LOCAL: must be SEQ_NUM==1 and FRAG_NUM==1
-      if (c[28:24] != 5'd1) inv = 1;
+      // LOCAL: FRAG_NUM must be 1 (spec Section 6). SEQ_NUM identifies
+      // the packet but has NO functional impact on local routing - its
+      // only requirement is the general non-zero check above.
       if (c[20:16] != 5'd1) inv = 1;
     end else begin
-      // REMOTE: SEQ_NUM and FRAG_NUM must be non-zero
-      if (c[28:24] == 5'd0) inv = 1;
+      // REMOTE: FRAG_NUM must be non-zero (SEQ_NUM==0 already covered above)
       if (c[20:16] == 5'd0) inv = 1;
     end
 
@@ -296,20 +301,36 @@ module BIRD  (
 
                         // If this is a remote fragment for the active packet, drop that active packet too
                         if (cfg[0] == 1'b1 && remote_active && (cfg[28:24] == active_seq)) begin
-                            drop_remote_packet_counted();
+                            clear_remote_state();
                         end  
                     end else begin
                         // Valid cfg: handle local vs remote
                         if (!rx_is_remote) begin
-                            // LOCAL valid (SEQ_NUM==1 and FRAG_NUM==1): forward first payload byte
+                            // LOCAL valid: forward first payload byte
                             $display("push new local pkt first byte %0h",data_in );
                             local_q.push_back(data_in);
                         end else begin
                             // REMOTE valid
                             if (!remote_active) begin
-                                // Start a new remote packet only when FRAG_NUM==1
-                                // if (rx_frag == 1) begi
-                              if (rx_seq <= rx_frag) begin
+                                // Start a new remote packet using the incoming SEQ_NUM.
+                                // Fragments may arrive out of order, so the first received
+                                // fragment does not have to be FRAG_NUM==1.
+                                remote_active   = 1;
+                                active_seq      = rx_seq;
+                                active_max_frag = 0;
+                                for (int f = 1; f <= 31; f++) begin
+                                    frag_seen[f] = 0;
+                                    frag_payload[f].delete();
+                                end
+                                $display("====================0 Adding data %0h",data_in);
+                                cur_frag_payload.push_back(data_in);
+                            end else begin
+                                // Active packet exists
+                                $display("rx seq %0d, active seq %0d", rx_seq, active_seq);
+                                if (rx_seq != active_seq) begin
+                                    // Mismatched SEQ while accumulating => drop current packet,
+                                    // then start accumulating the incoming packet.
+                                    drop_remote_packet_counted();
                                     remote_active   = 1;
                                     active_seq      = rx_seq;
                                     active_max_frag = 0;
@@ -317,36 +338,8 @@ module BIRD  (
                                         frag_seen[f] = 0;
                                         frag_payload[f].delete();
                                     end
-                                    $display("====================0 Adding data %0h",data_in);
+                                    $display("====================1 Adding data %0h",data_in);
                                     cur_frag_payload.push_back(data_in);
-                                end else begin
-                                    // Remote fragment without active packet start => drop packet
-                                    inc_drop_cnt();
-                                end
-                            end else begin
-                                // Active packet exists
-                                $display("rx seq %0d, active seq %0d", rx_seq, active_seq);
-                                //if (rx_seq != active_seq) begin
-                                if (rx_seq > rx_frag) begin
-                                    // Mismatched SEQ while accumulating => drop current packet
-                                    drop_remote_packet_counted();
-
-                                    // Start new only if incoming fragment is FRAG_NUM==1
-                                    //if (rx_frag == 1) begin
-                                    if (rx_seq == 1) begin
-                                        remote_active   = 1;
-                                        active_seq      = rx_seq;
-                                        active_max_frag = 0;
-                                        for (int f = 1; f <= 31; f++) begin
-                                            frag_seen[f] = 0;
-                                            frag_payload[f].delete();
-                                        end
-                                        $display("====================1 Adding data %0h",data_in);
-                                        cur_frag_payload.push_back(data_in);
-                                    end else begin
-                                        // Otherwise drop incoming packet too
-                                        inc_drop_cnt();
-                                    end
                                 end else begin
                                     // Same SEQ as active: accept payload
                                     $display("====================2 Adding data %0h",data_in);
@@ -372,10 +365,6 @@ module BIRD  (
                 // ----------------------------------------------------
                 RX_PAYLOAD: begin
                     rx_drop      = cfg_invalid(cfg);
-                  if ( (!rx_is_remote && remote_active) ||  (rx_is_remote && !remote_active) ) begin
-                         rx_drop =1;
-                    $display("Dropppppppppppppppppppppppppppp");
-                  end
                     if (!rx_drop) begin
                         if (!rx_is_remote) begin
                             // Local: forward payload bytes
@@ -383,7 +372,7 @@ module BIRD  (
                             local_q.push_back(data_in);
                         end else begin
                             // Remote: only keep collecting if active context matches rx_seq
-                            if (remote_active && (rx_seq <= rx_frag)) begin
+                            if (remote_active && (rx_seq == active_seq)) begin
                                 $display("%t ====================3 Adding data %0h",$time,data_in);
                                 cur_frag_payload.push_back(data_in);
                             end
@@ -393,7 +382,7 @@ module BIRD  (
                     if (payload_left > 0) payload_left <= payload_left - 1;
 
                     // After consuming the last remaining payload byte, move to CRC
-                    if (payload_left == 3) begin
+                    if (payload_left == 1) begin
                         //$display("ssssssssssssssssss state moved to crc");
                         rx_st <= RX_CRC;
                     end
@@ -419,32 +408,31 @@ module BIRD  (
                         if (!rx_drop && rx_is_remote) begin
                             $display("no drop and is remote");
                             // Commit remote fragment payload if active and SEQ matches
-                            if (!(remote_active && (rx_seq <= rx_frag))) begin
+                            if (!(remote_active && (rx_seq == active_seq))) begin
                                 // Remote fragment without valid active context => drop packet
                                 $display("inc_drop_cnt rx_seq %0d active_seq %0d", rx_seq, active_seq);
                                 inc_drop_cnt();
                             end else begin
                                 // rx_frag is guaranteed non-zero by cfg_invalid() for remote
                                 //if (rx_frag < 1 || rx_frag > 31) begin
-                                if (rx_seq < 1 || rx_seq > rx_frag) begin
+                                if (rx_frag < 1 || rx_frag > 31) begin
                                     drop_remote_packet_counted();
                                 end else begin
                                     $display("payload ready ........");
                                     //frag_seen[rx_frag] = 1;
                                     //frag_payload[rx_frag].delete();
-                                    frag_seen[rx_seq] = 1;
-                                    frag_payload[rx_seq].delete();
+                                    frag_seen[rx_frag] = 1;
+                                    frag_payload[rx_frag].delete();
                                     //foreach (cur_frag_payload[i]) frag_payload[rx_frag].push_back(cur_frag_payload[i]);
                                     
                                     foreach (cur_frag_payload[i]) begin
                                         $display ("push back to frag_payload %0h",cur_frag_payload[i] );
-                                        frag_payload[rx_seq].push_back(cur_frag_payload[i]);
+                                        frag_payload[rx_frag].push_back(cur_frag_payload[i]);
                                     end
 
                                     // Infer N as max FRAG_NUM seen so far
                                     $display("check if frag done");
                                     if (rx_frag > active_max_frag) active_max_frag = rx_frag;
-                                    if (rx_seq > active_max_frag) active_max_frag = rx_seq;
 
                                     // If we now have all fragments 1..N, build output
                                     if (all_frags_ready(active_max_frag)) begin

@@ -34,6 +34,9 @@ class environment;
 
   virtual bird_if vif;
 
+  // Guard so persistent driver/monitor/scoreboard threads are launched only once.
+  bit started;
+
   function new(virtual bird_if vif);
     this.vif = vif;
 
@@ -48,6 +51,7 @@ class environment;
     drv = agt.drv;
     mon = agt.mon;
     sb  = new(mon2sb_input_mbx, mon2sb_local_mbx, mon2sb_remote_mbx, mon2sb_dropcnt_mbx);
+    started = 0;
   endfunction
 
   // ----------------------------------------------------------
@@ -56,6 +60,7 @@ class environment;
   task apply_reset(int unsigned cycles = 3);
     vif.rst_n = 1'b0;
     drv.reset_signals();
+    sb.reset();
     repeat (cycles) @(posedge vif.clk);
     vif.rst_n = 1'b1;
     @(posedge vif.clk);
@@ -68,8 +73,11 @@ class environment;
   // via gen.run() for randomized traffic.
   // ----------------------------------------------------------
   task run();
-    agt.run();
-    sb.run();
+    if (!started) begin
+      started = 1;
+      agt.run();
+      sb.run();
+    end
   endtask
 
   // ----------------------------------------------------------

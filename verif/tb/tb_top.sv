@@ -1,4 +1,11 @@
-
+// ============================================================
+// tb_top.sv
+// ------------------------------------------------------------
+// Top-level testbench: generates clock, instantiates the BIRD
+// DUT and the bird_if interface, connects them, and invokes
+// the test class to drive the full directed (+ optional random)
+// suite. Includes VCD waveform dumping.
+// ============================================================
 
 `timescale 1ns/1ps
 
@@ -12,7 +19,7 @@
 `include "coverage.sv"
 `include "scoreboard.sv"
 `include "environment.sv"
-`include "test.sv"
+`include "regression.sv"
 
 module tb_top;
 
@@ -27,7 +34,10 @@ module tb_top;
   // ----------------------------------------------------------
   bird_if dut_if (.clk(clk));
 
-
+  // ----------------------------------------------------------
+  // DUT instance (RTL under test - bird.sv must be compiled
+  // alongside this testbench; not modified by the TB).
+  // ----------------------------------------------------------
   BIRD dut (
     .clk         (clk),
     .rst_n       (dut_if.rst_n),
@@ -48,8 +58,10 @@ module tb_top;
     .data_remote (dut_if.data_remote)
   );
 
-
-  test t;
+  // ----------------------------------------------------------
+  // Test invocation
+  // ----------------------------------------------------------
+  bird_regression t;
   int unsigned test_id;
 
   initial begin
@@ -57,7 +69,7 @@ module tb_top;
     $dumpvars(0, tb_top);
 
     if (!$value$plusargs("TEST_ID=%0d", test_id)) test_id = 0;
-    $display("[TB_TOP] Running TEST_ID=%0d (0 means full suite)", test_id);
+    $display("[TB_TOP] Running TEST_ID=%0d (0 means full regression)", test_id);
 
     t = new(dut_if);
     t.run_by_id(test_id);
@@ -67,7 +79,9 @@ module tb_top;
     $finish;
   end
 
-
+  // ----------------------------------------------------------
+  // Safety timeout (in case of a deadlock/hang in any test)
+  // ----------------------------------------------------------
   initial begin
     #2_000_000; // 2ms simulated time ceiling
     $display("[TB_TOP][TIMEOUT] Global watchdog fired - forcing $finish");

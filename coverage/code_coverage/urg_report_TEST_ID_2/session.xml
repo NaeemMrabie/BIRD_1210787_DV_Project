@@ -1,0 +1,40 @@
+<session version="1.1" release="T-2022.06-SP2" timestp="2026-06-21 17:00:14 GMT">
+  <info>
+    <attr name="datetime" value="Sun Jun 21 20:00:14 2026
+"/>
+    <attr name="command" value="urg -dir simv.vdb -report coverage/code_coverage/urg_report_TEST_ID_2"/>
+    <attr name="top_instance" value="tb_top"/>
+  </info>
+  <hvp>
+    <datadef>
+      <metdef name="Line" type="ratio" aggregator="average" builtin="1" />
+      <metdef name="Cond" type="ratio" aggregator="average" builtin="1" />
+      <metdef name="Toggle" type="ratio" aggregator="average" builtin="1" />
+      <metdef name="FSM" type="ratio" aggregator="average" builtin="1" />
+      <metdef name="Branch" type="ratio" aggregator="average" builtin="1" />
+      <metdef name="Group" type="percent" aggregator="average" builtin="1" />
+    </datadef>
+  </hvp>
+  <old_coverage>
+  <scope type="top" name="top">
+    <metric name="Line" value="171/184" />
+    <metric name="Cond" value="19/32" />
+    <metric name="Toggle" value="324/428" />
+    <metric name="FSM" value="4/5" />
+    <metric name="Branch" value="32/40" />
+    <metric name="Group" value="92.376%" />
+  </scope>
+  <scope type="instance" name="top">
+  </scope>
+  <scope type="group" name="top">
+    <scope type="group" name="$unit::bird_coverage::protocol_cg">
+      <metric name="Group" value="88.5714%" />
+    </scope>
+    <scope type="group" name="$unit::bird_coverage::cfg_cg">
+      <metric name="Group" value="96.1805%" />
+    </scope>
+  </scope>
+  <scope type="assert" name="Statistics">
+  </scope>
+  </old_coverage>
+</session>

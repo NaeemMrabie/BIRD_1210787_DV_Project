@@ -46,6 +46,13 @@ class scoreboard;
   int unsigned remote_match_cnt, remote_mismatch_cnt;
   int unsigned dropcnt_match_cnt, dropcnt_mismatch_cnt;
 
+  // Last drop counter value observed from DUT.  drop_cnt may change before
+  // the monitor has completed and sent the full fragment to the reference
+  // model, so we compare it in report() after the test drains.
+  bit [15:0] last_obs_drop_cnt;
+  bit        saw_drop_cnt_sample;
+  bit        started;
+
   function new(mailbox #(transaction)     mon2sb_input_mbx,
                mailbox #(local_byte_obs)  mon2sb_local_mbx,
                mailbox #(remote_word_obs) mon2sb_remote_mbx,
@@ -62,6 +69,38 @@ class scoreboard;
     remote_mismatch_cnt   = 0;
     dropcnt_match_cnt     = 0;
     dropcnt_mismatch_cnt  = 0;
+    last_obs_drop_cnt    = 16'h0;
+    saw_drop_cnt_sample  = 0;
+    started              = 0;
+  endfunction
+
+  // ----------------------------------------------------------
+  // Reset scoreboard state between tests/resets.
+  // This drains stale monitor messages and clears the independent
+  // reference model. Functional coverage is intentionally kept
+  // cumulative across the full regression.
+  // ----------------------------------------------------------
+  function void reset();
+    transaction t;
+    local_byte_obs lb;
+    remote_word_obs rw;
+    bit [15:0] dc;
+
+    while (mon2sb_input_mbx.try_get(t));
+    while (mon2sb_local_mbx.try_get(lb));
+    while (mon2sb_remote_mbx.try_get(rw));
+    while (mon2sb_dropcnt_mbx.try_get(dc));
+
+    rm.reset();
+
+    local_match_cnt       = 0;
+    local_mismatch_cnt    = 0;
+    remote_match_cnt      = 0;
+    remote_mismatch_cnt   = 0;
+    dropcnt_match_cnt     = 0;
+    dropcnt_mismatch_cnt  = 0;
+    last_obs_drop_cnt     = 16'h0;
+    saw_drop_cnt_sample   = 0;
   endfunction
 
   // ----------------------------------------------------------
@@ -134,13 +173,8 @@ class scoreboard;
     forever begin
       mon2sb_dropcnt_mbx.get(obs);
       cov.sample_drop_cnt(obs);
-      if (obs === rm.exp_drop_cnt) begin
-        dropcnt_match_cnt++;
-      end else begin
-        dropcnt_mismatch_cnt++;
-        $error("[SB][DROP_CNT] MISMATCH: observed=%0d expected=%0d (match#%0d mismatch#%0d)",
-               obs, rm.exp_drop_cnt, dropcnt_match_cnt, dropcnt_mismatch_cnt);
-      end
+      last_obs_drop_cnt   = obs;
+      saw_drop_cnt_sample = 1;
     end
   endtask
 
@@ -148,18 +182,30 @@ class scoreboard;
   // Launch all scoreboard processes concurrently
   // ----------------------------------------------------------
   task run();
-    fork
-      feed_ref_model();
-      check_local();
-      check_remote();
-      check_dropcnt();
-    join_none
+    if (!started) begin
+      started = 1;
+      fork
+        feed_ref_model();
+        check_local();
+        check_remote();
+        check_dropcnt();
+      join_none
+    end
   endtask
 
   // ----------------------------------------------------------
   // Final report (call at end of test)
   // ----------------------------------------------------------
   function void report();
+    // Final drop counter comparison after all input/output activity drains.
+    if (last_obs_drop_cnt === rm.exp_drop_cnt) begin
+      dropcnt_match_cnt++;
+    end else begin
+      dropcnt_mismatch_cnt++;
+      $error("[SB][DROP_CNT][FINAL] MISMATCH: observed=%0d expected=%0d (match#%0d mismatch#%0d)",
+             last_obs_drop_cnt, rm.exp_drop_cnt, dropcnt_match_cnt, dropcnt_mismatch_cnt);
+    end
+
     $display("==================================================");
     $display("[SCOREBOARD] FINAL REPORT");
     $display("  LOCAL : match=%0d mismatch=%0d pending_expected=%0d",

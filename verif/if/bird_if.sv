@@ -1,3 +1,13 @@
+// ============================================================
+// bird_if.sv
+// ------------------------------------------------------------
+// SystemVerilog interface wrapping all BIRD DUT signals.
+// Provides separate clocking blocks for:
+//   - driver  (drives input side, samples in_rdy)
+//   - monitor (passively samples everything)
+// This keeps driver/monitor decoupled from raw signal timing
+// and avoids race conditions around the clock edge.
+// ============================================================
 
 `ifndef BIRD_IF_SV
 `define BIRD_IF_SV
@@ -25,7 +35,13 @@ interface bird_if (input logic clk);
   logic        remote_rdy;
   logic [31:0] data_remote;
 
-
+  // ----------------------------------------------------------
+  // Driver clocking block
+  // Driver drives in_vld/data_in/cfg, and local_rdy/remote_rdy
+  // (rdy on the consumer sides is also driven by TB since BIRD
+  // is the DUT producing on those interfaces).
+  // Driver samples in_rdy to know if its transfer was accepted.
+  // ----------------------------------------------------------
   clocking drv_cb @(posedge clk);
     output in_vld;
     output data_in;
@@ -35,8 +51,13 @@ interface bird_if (input logic clk);
     input  in_rdy;
   endclocking
 
-
+  // ----------------------------------------------------------
+  // Monitor clocking block
+  // Purely passive: samples everything one cycle "settled"
+  // after the active edge, so it always sees post-edge values.
+  // ----------------------------------------------------------
   clocking mon_cb @(posedge clk);
+    default input #1ps;
     input in_vld;
     input in_rdy;
     input data_in;
@@ -50,7 +71,7 @@ interface bird_if (input logic clk);
     input data_remote;
   endclocking
 
-
+  // Modports (used if blocks/modules want a restricted view)
   modport DRV (clocking drv_cb, input rst_n);
   modport MON (clocking mon_cb, input rst_n);
 

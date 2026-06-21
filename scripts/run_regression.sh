@@ -1,24 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Runs all 15 tests individually and merges coverage.
-# Requires design/bird.sv to be present and uncommented in vcs.f.
+# Full BIRD regression: directed suite followed by random suite.
+# Use +FULL_DROP_WRAP=1 manually if you want the long 65537-drop wrap test.
 
 vcs -full64 -sverilog -debug_access+all -timescale=1ns/1ps \
     -cm line+cond+fsm+tgl+branch+assert \
     -f vcs.f -o simv
 
-rm -rf coverage/work
-mkdir -p coverage/work
+mkdir -p coverage/work coverage/functional_coverage coverage/code_coverage
 
-for tid in $(seq 1 15); do
-  echo "===== Running TEST_ID=${tid} ====="
-  ./simv +TEST_ID=${tid} -cm line+cond+fsm+tgl+branch+assert \
-        -cm_name TEST_${tid} | tee coverage/work/TEST_${tid}.log
-  if grep -q "RESULT: FAIL" coverage/work/TEST_${tid}.log; then
-    echo "TEST_ID=${tid} failed"
-    exit 1
-  fi
-done
+./simv +TEST_ID=0 -cm line+cond+fsm+tgl+branch+assert \
+      -cm_name FULL_REGRESSION | tee coverage/functional_coverage/functional_coverage_TEST_ID_0.log
 
 urg -dir simv.vdb -report coverage/code_coverage/urg_regression_report

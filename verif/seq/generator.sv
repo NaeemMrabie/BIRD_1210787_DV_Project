@@ -1,3 +1,16 @@
+// ============================================================
+// generator.sv
+// ------------------------------------------------------------
+// Generator: produces "transaction" objects and pushes them
+// into a mailbox consumed by the driver.
+//
+// Supports:
+//  - random local/remote traffic generation
+//  - directed scenario generation (legal multi-fragment remote
+//    packets, out-of-order fragments, malformed cfg, etc.)
+//
+// Communication: generator -> (mailbox #(transaction)) -> driver
+// ============================================================
 
 `ifndef GENERATOR_SV
 `define GENERATOR_SV
@@ -19,6 +32,11 @@ class generator;
     this.txn_sent = 0;
   endfunction
 
+  // ----------------------------------------------------------
+  // Random local transaction (legal: frag_num=1, traffic_type=0,
+  // seq_num random nonzero per spec, since spec says SEQ_NUM has
+  // no functional impact on local routing - so don't force ==1)
+  // ----------------------------------------------------------
   function transaction gen_random_local(int unsigned seq = 0, int unsigned payload_len = 0);
     transaction t = new();
     if (!t.randomize() with {
