@@ -60,8 +60,8 @@ $(document).ready(function () {
 <table align=left>
 <tr class="sortablehead">
 <td>SCORE</td><td>LINE</td><td>COND</td><td>TOGGLE</td><td>FSM</td><td>BRANCH</td></tr><tr>
-<td class="s7 cl rt"> 75.00</td>
-<td class="s7 cl rt"><a href="mod3.html#Line" > 75.00</a></td>
+<td class="s8 cl rt"> 81.25</td>
+<td class="s9 cl rt"><a href="mod3.html#Line" > 93.75</a></td>
 <td class="wht cl rt"></td>
 <td class="s10 cl rt"><a href="mod3.html#Toggle" >100.00</a></td>
 <td class="wht cl rt"></td>
@@ -77,8 +77,8 @@ $(document).ready(function () {
 <tr class="sortablehead">
 <td class="alfsrt">NAME</td><td>SCORE</td><td>LINE</td><td>COND</td><td>TOGGLE</td><td>FSM</td><td>BRANCH</td></tr><tr>
 <td class="wht cl wordwrap"><a href="mod3.html#inst_tag_3"  onclick="showContent('inst_tag_3')">tb_top</a></td>
-<td class="s7 cl rt"> 75.00</td>
-<td class="s7 cl rt"><a href="mod3.html#Line" > 75.00</a></td>
+<td class="s8 cl rt"> 81.25</td>
+<td class="s9 cl rt"><a href="mod3.html#Line" > 93.75</a></td>
 <td class="wht cl rt"></td>
 <td class="s10 cl rt"><a href="mod3.html#Toggle" >100.00</a></td>
 <td class="wht cl rt"></td>
@@ -99,8 +99,8 @@ $(document).ready(function () {
 <table align=left>
 <tr class="sortablehead">
 <td>SCORE</td><td>LINE</td><td>COND</td><td>TOGGLE</td><td>FSM</td><td>BRANCH</td></tr><tr>
-<td class="s7 cl rt"> 75.00</td>
-<td class="s7 cl rt"><a href="mod3.html#Line" > 75.00</a></td>
+<td class="s8 cl rt"> 81.25</td>
+<td class="s9 cl rt"><a href="mod3.html#Line" > 93.75</a></td>
 <td class="wht cl rt"></td>
 <td class="s10 cl rt"><a href="mod3.html#Toggle" >100.00</a></td>
 <td class="wht cl rt"></td>
@@ -112,8 +112,8 @@ $(document).ready(function () {
 <table align=left>
 <tr class="sortablehead">
 <td>SCORE</td><td>LINE</td><td>COND</td><td>TOGGLE</td><td>FSM</td><td>BRANCH</td></tr><tr>
-<td class="s8 cl rt"> 83.85</td>
-<td class="s9 cl rt"> 92.93</td>
+<td class="s8 cl rt"> 84.18</td>
+<td class="s9 cl rt"> 94.57</td>
 <td class="s6 cl rt"> 68.75</td>
 <td class="s7 cl rt"> 77.57</td>
 <td class="s10 cl rt">100.00</td>
@@ -159,10 +159,10 @@ Line Coverage for Module : <a href="mod3.html" >tb_top</a><br clear=all>
 <col width="122">
 <col span="4" width="82">
 <tr><th></th><th>Line No.</th><th>Total</th><th>Covered</th><th>Percent</th></tr>
-<tr class="s7"><td class="lf">TOTAL</td><td></td><td>16</td><td>12</td><td>75.00</td></tr>
+<tr class="s9"><td class="lf">TOTAL</td><td></td><td>16</td><td>15</td><td>93.75</td></tr>
 <tr class="s10"><td class="lf">ALWAYS</td><td>30</td><td>2</td><td>2</td><td>100.00</td></tr>
 <tr class="s9"><td class="lf">INITIAL</td><td>68</td><td>10</td><td>9</td><td>90.00</td></tr>
-<tr class="s2"><td class="lf">INITIAL</td><td>86</td><td>4</td><td>1</td><td>25.00</td></tr>
+<tr class="s10"><td class="lf">INITIAL</td><td>86</td><td>4</td><td>4</td><td>100.00</td></tr>
 </table>
 <pre class="code"><br clear=all>
 29                        logic clk = 0;
@@ -223,9 +223,9 @@ Line Coverage for Module : <a href="mod3.html" >tb_top</a><br clear=all>
 83                        // Safety timeout (in case of a deadlock/hang in any test)
 84                        // ----------------------------------------------------------
 85                        initial begin
-86         <font color = "red">1/2     ==>      #2_000_000; // 2ms simulated time ceiling</font>
-87         <font color = "red">0/1     ==>      $display(&quot;[TB_TOP][TIMEOUT] Global watchdog fired - forcing $finish&quot;);</font>
-88         <font color = "red">0/1     ==>      $finish;</font>
+86         2/2              #2_000_000; // 2ms simulated time ceiling
+87         1/1              $display(&quot;[TB_TOP][TIMEOUT] Global watchdog fired - forcing $finish&quot;);
+88         1/1              $finish;
 </pre>
 <hr>
 <a name="Toggle"></a>
