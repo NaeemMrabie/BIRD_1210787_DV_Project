@@ -20,14 +20,12 @@
 class generator;
 
   mailbox #(transaction) gen2drv_mbx;  // generator -> driver
-  event                   drv_done_ev; // optional: driver signals completion (for lock-step gen)
 
   int unsigned num_transactions; // how many random transactions to generate
   int unsigned txn_sent;
 
-  function new(mailbox #(transaction) gen2drv_mbx, event drv_done_ev = null);
+  function new(mailbox #(transaction) gen2drv_mbx);
     this.gen2drv_mbx = gen2drv_mbx;
-    this.drv_done_ev = drv_done_ev;
     this.num_transactions = 0;
     this.txn_sent = 0;
   endfunction

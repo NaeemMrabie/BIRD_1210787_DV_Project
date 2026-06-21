@@ -35,14 +35,14 @@ endclass
 
 class monitor;
 
-  virtual bird_if.MON vif;
+  virtual bird_if vif;
 
   mailbox #(transaction)      mon2sb_input_mbx;   // input fragment observed -> scoreboard
   mailbox #(local_byte_obs)   mon2sb_local_mbx;   // local output byte -> scoreboard
   mailbox #(remote_word_obs)  mon2sb_remote_mbx;  // remote output word -> scoreboard
   mailbox #(bit [15:0])       mon2sb_dropcnt_mbx; // drop_cnt sample -> scoreboard
 
-  function new(virtual bird_if.MON vif,
+  function new(virtual bird_if vif,
                mailbox #(transaction)     mon2sb_input_mbx,
                mailbox #(local_byte_obs)  mon2sb_local_mbx,
                mailbox #(remote_word_obs) mon2sb_remote_mbx,

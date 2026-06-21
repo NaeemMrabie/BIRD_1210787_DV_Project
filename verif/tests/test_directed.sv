@@ -29,6 +29,9 @@ class bird_directed_test_base;
 
   task post_test(int unsigned extra_cycles = 100);
     env.wait_drain(extra_cycles);
+    env.drv.local_rdy_low_pct  = 0;
+    env.drv.remote_rdy_low_pct = 0;
+    env.drv.in_vld_gap_pct     = 0;
     $display("==================================================");
     $display("[TEST] %s COMPLETE", test_name);
     env.report();

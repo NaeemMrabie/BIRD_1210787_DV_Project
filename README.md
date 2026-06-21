@@ -22,21 +22,9 @@ vcs.f            VCS file list
 
 This follows the same high-level structure as the class example repository: `design/`, `verif/if/`, `verif/env/`, `verif/cfg/`, `verif/seq/`, `verif/tests/`, `verif/tb/`, and `vcs.f`.
 
-## Important setup step
+## Important setup note
 
-I could open the EDA Playground page, but the actual `design.sv` source is loaded dynamically in the browser and was not extractable from the page text here. Copy the DUT from the provided playground into:
-
-```text
-design/bird.sv
-```
-
-Then open `vcs.f` and uncomment:
-
-```text
-design/bird.sv
-```
-
-The verification code itself is already organized and ready.
+`design/bird.sv` is included in `vcs.f`. If your instructor gave you a different official DUT, replace only `design/bird.sv` with that DUT while keeping the same module name and ports.
 
 ## Build and run
 
